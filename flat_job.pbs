@@ -1,0 +1,10 @@
+#!/bin/bash
+#PBS -l walltime=6:00:00
+#PBS -j oe
+#PBS -l nodes=1:ppn=1
+#PBS -N flattening
+#PBS -o log_flattening_${INP}.txt
+#PBS -q batchnew
+
+
+/shared/users/asousa/WIPP/lightning_power_study/bin/flatten_longitude_variation --inp_dir ${BASE}/${INP} --out_dir ${BASE}/${INP}_flat --iyr 2010 --idoy 1 --isec 0

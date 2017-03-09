@@ -43,28 +43,28 @@ R_E = 6371
 
 
 # -------------- Simulation params ---------------------
-t_max = 15     # Maximum duration in seconds
+t_max = 20     # Maximum duration in seconds
 
 dt0 = 1e-3      # Initial timestep in seconds
-dtmax = 1e-1    # Maximum allowable timestep in seconds
+dtmax = 5e-2    # Maximum allowable timestep in seconds
 root = 2        # Which root of the Appleton-Hartree equation
                 # (1 = negative, 2 = positive)
                 # (2=whistler in magnetosphere)
 fixedstep = 0   # Don't use fixed step sizes, that's a bad idea.
-maxerr = 5e-3   # Error bound for adaptive timestepping
-maxsteps = 1e5  # Max number of timesteps (abort if reached)
+maxerr = 5e-2   # Error bound for adaptive timestepping
+maxsteps = 2e5  # Max number of timesteps (abort if reached)
 modelnum = 1    # Which model to use (1 = ngo, 2=GCPM, 3=GCPM interp, 4=GCPM rand interp)
 use_IGRF = 0    # Magnetic field model (1 for IGRF, 0 for dipole)
 use_tsyg = 0    # Use the Tsyganenko magnetic field model corrections
 
-minalt   = (R_E + 500)*1e3 # cutoff threshold in meters
+minalt   = (R_E + 800)*1e3 # cutoff threshold in meters
 
 vec_ind = 0     # Which set of default params to use for the gcpm model
 
 dump_model = True
 run_rays   = True
 
-ray_out_dir = '/shared/users/asousa/WIPP/rays/ngo_dipole'
+ray_out_dir = '/shared/users/asousa/WIPP/rays/2d/nightside/ngo'
 
 # ---------------- Input parameters --------------------
 ray_datenum = dt.datetime(2010, 1, 1, 00, 00, 00);
@@ -74,21 +74,19 @@ milliseconds_day = (ray_datenum.second + ray_datenum.minute*60 + ray_datenum.hou
 # Coordinate transformation library
 xf = xflib.xflib(lib_path='/shared/users/asousa/WIPP/raymaker/libxformd.so')
 
-inp_lats = np.arange(12, 61, 2) #[35] #np.arange(30, 61, 5) #[40, jh41, 42, 43]
+inp_lats = np.arange(12, 61, 1) #[35] #np.arange(30, 61, 5) #[40, jh41, 42, 43]
 # inp_lats = [10,12,14]
 # Get solar and antisolar points:
 sun = xf.gse2sm([-1,0,0], ray_datenum)
-sun_geomag_midnight = np.round(xf.sm2rllmag(sun, ray_datenum))
+sun_geomag_midnight = xf.sm2rllmag(sun, ray_datenum)
 sun = xf.gse2sm([1,0,0], ray_datenum)
-sun_geomag_noon = np.round(xf.sm2rllmag(sun, ray_datenum))
+sun_geomag_noon = xf.sm2rllmag(sun, ray_datenum)
 
 
-# Nightside
-inp_lons_night = np.arange(sun_geomag_midnight[2] - 20, sun_geomag_midnight[2] + 20, 2)
-inp_lons_day   = np.arange(sun_geomag_noon[2] - 20,     sun_geomag_noon[2] + 20,     2)
-
-inp_lons = np.hstack([inp_lons_night, inp_lons_day])
-
+# inp_lons_night = np.arange(sun_geomag_midnight[2] - 20, sun_geomag_midnight[2] + 20, 2)
+# inp_lons_day   = np.arange(sun_geomag_noon[2] - 20,     sun_geomag_noon[2] + 20,     2)
+# inp_lons = np.hstack([inp_lons_night, inp_lons_day])
+inp_lons = [sun_geomag_midnight[2]]
 
 
 launch_alt = (R_E + 1000)*1e3
@@ -388,7 +386,7 @@ if (dump_model):
         plane = chunks[rank][0]
         print "process %d doing %s"%(rank, plane)
         
-        maxD = 5.0*R_E*1e3
+        maxD = 10.0*R_E*1e3
         if plane=='XZ':
             minx = -maxD
             maxx = maxD

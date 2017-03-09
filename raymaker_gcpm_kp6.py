@@ -51,23 +51,23 @@ root = 2        # Which root of the Appleton-Hartree equation
                 # (1 = negative, 2 = positive)
                 # (2=whistler in magnetosphere)
 fixedstep = 0   # Don't use fixed step sizes, that's a bad idea.
-maxerr = 5e-3   # Error bound for adaptive timestepping
+maxerr = 2e-3   # Error bound for adaptive timestepping
 maxsteps = 2e5  # Max number of timesteps (abort if reached)
 modelnum = 2    # Which model to use (1 = ngo, 2=GCPM, 3=GCPM interp, 4=GCPM rand interp)
 use_IGRF = 0    # Magnetic field model (1 for IGRF, 0 for dipole)
 use_tsyg = 0    # Use the Tsyganenko magnetic field model corrections
 fixed_MLT= 1
-MLT = 0
+MLT = 12
 
 minalt   = (R_E + 800)*1e3 # cutoff threshold in meters
 
 
 dump_model = False
 run_rays   = True
-vec_ind = 2     # Which set of default params to use for the gcpm model
+vec_ind = 3     # Which set of default params to use for the gcpm model
 # Kpvec = [0, 2, 4, 6, 8]
 
-ray_out_dir = '/shared/users/asousa/WIPP/rays/2d/nightside/gcpm_kp4'
+ray_out_dir = '/shared/users/asousa/WIPP/rays/2d/dayside/gcpm_kp6'
 
 # ---------------- Input parameters --------------------
 ray_datenum = dt.datetime(2010, 1, 1, 00, 00, 00);
@@ -78,7 +78,6 @@ milliseconds_day = (ray_datenum.second + ray_datenum.minute*60 + ray_datenum.hou
 xf = xflib.xflib(lib_path='/shared/users/asousa/WIPP/raymaker/libxformd.so')
 
 inp_lats = np.arange(12, 61, 1) #[35] #np.arange(30, 61, 5) #[40, jh41, 42, 43]
-# inp_lats = np.arange(55,61,1)
 # inp_lats = [10,12,14]
 # Get solar and antisolar points:
 sun = xf.gse2sm([-1,0,0], ray_datenum)
@@ -91,8 +90,8 @@ sun_geomag_noon = (xf.sm2rllmag(sun, ray_datenum))
 # inp_lons_night = np.arange(sun_geomag_midnight[2] - 20, sun_geomag_midnight[2] + 20, 2)
 # inp_lons_day   = np.arange(sun_geomag_noon[2] - 20,     sun_geomag_noon[2] + 20,     2)
 
-inp_lons = [sun_geomag_midnight[2]]
-# inp_lons = [76]
+inp_lons = [sun_geomag_noon[2]]
+
 
 launch_alt = (R_E + 1000)*1e3
 
@@ -100,6 +99,7 @@ f1 = 200; f2 = 30000;
 num_freqs = 33
 flogs = np.linspace(np.log10(f1), np.log10(f2), num_freqs)
 freqs = np.round(pow(10, flogs)/10.)*10
+
 
 # # TESTS FOR SINGLE CASE
 # freqs = [18750]
@@ -252,8 +252,6 @@ if run_rays:
                     # Rotate from geomagnetic to SM cartesian coordinates
                     inp_coords = xf.rllmag2sm(inp, ray_datenum)
                     # inp_coords = xf.s2c(inp)
-
-                    # inp_coords[1] = 0.0
 
                     # Write ray to the input file (used by the raytracer):
                     f = open(ray_inpfile,'w')

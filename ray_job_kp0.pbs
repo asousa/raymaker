@@ -1,10 +1,10 @@
 #!/bin/bash
-#PBS -l walltime=72:00:00
+#PBS -l walltime=6:00:00
 #PBS -j oe
-#PBS -l nodes=120:ppn=1
+#PBS -l nodes=15:ppn=1
 #PBS -o log_gcpm_kp0.txt
 #PBS -N gcpm_kp0
-#PBS -q batchnew
+#PBS -q batch
 
 # --mca btl_tcp_if_include p3p2 tells batchnew nodes which network interface to use
 #   batch is infiniband (ib0?), batchnew is just a private ethernet network
@@ -14,5 +14,5 @@ mpi=/usr/local/bin/mpirun # Which MPI to run
 pyt=/shared/users/asousa/software/python2/bin/python
 cmd=/shared/users/asousa/WIPP/raymaker/raymaker_gcpm_kp0.py # Which file to run
 
-# $mpi $pyt $cmd
-$mpi --mca btl_tcp_if_include p3p2 $pyt $cmd
+$mpi $pyt $cmd
+# $mpi --mca btl_tcp_if_include p3p2 $pyt $cmd
