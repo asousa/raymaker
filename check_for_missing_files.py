@@ -36,7 +36,7 @@ inp_lons_day   = np.arange(sun_geomag_noon[2] - 20,     sun_geomag_noon[2] + 20,
 
 # inp_lons = np.hstack([inp_lons_night, inp_lons_day])
 # inp_lons = [sun_geomag_midnight[2]]
-inp_lons = [76]
+inp_lons = [256]
 
 f1 = 200; f2 = 30000;
 num_freqs = 33
@@ -49,7 +49,7 @@ project_root = '/shared/users/asousa/WIPP/raymaker/'
 raytracer_root = '/shared/users/asousa/software/raytracer_v1.17/'
 damping_root = '/shared/users/asousa/software/damping/'
 ray_bin_dir    = os.path.join(raytracer_root, 'bin')
-ray_out_dir = '/shared/users/asousa/WIPP/rays/2d/nightside/gcpm_kp4_flat'
+ray_out_dir = '/shared/users/asousa/WIPP/rays/2d/dayside/gcpm_kp4_flat'
 
 missing_rays = 0
 missing_damp = 0
